@@ -1,0 +1,122 @@
+name: "Go_player"
+layer {
+    name: "data"
+    type: "ImageData"
+    top: "data"
+    top: "label"
+    include {
+      phase: TRAIN
+    }
+    image_data_param {
+      source: "../trained_models/dataset_test/2x2_square/dataset_train.txt"
+      batch_size: 64
+      shuffle: true
+    }
+}
+
+layer {
+    name: "data"
+    type: "ImageData"
+    top: "data"
+    top: "label"
+    include {
+      phase: TEST
+    }
+    image_data_param {
+      source: "dataset_train.txt"
+      batch_size: 2
+      shuffle: true
+    }
+}
+
+layer {
+    name: "conv1"
+    type: "Convolution"
+    bottom: "data"
+    top: "conv1"  
+    convolution_param {
+      num_output: 64
+      pad: 2
+      kernel_size: 5
+      stride: 1
+      weight_filler {
+        type: "xavier"
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+}
+
+layer {
+    name: "prelu1"
+    type: "PReLU"
+    bottom: "conv1"
+    top: "prelu1"
+}
+
+layer {
+    name: "conv2"
+    type: "Convolution"
+    bottom: "prelu1"
+    top: "conv2"  
+    convolution_param {
+      num_output: 1
+      pad: 2
+      kernel_size: 5
+      stride: 1
+      weight_filler {
+        type: "xavier"
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+}
+
+layer {
+    name: "prelu2"
+    type: "PReLU"
+    bottom: "conv2"
+    top: "prelu2"
+}
+
+layer {
+    name: "fc8"
+    type: "InnerProduct"
+    bottom: "prelu2"
+    top: "fc8"   
+ 
+    inner_product_param {
+      num_output: 362  
+      weight_filler {
+        type: "xavier"
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+}
+
+layer {
+    name: "probT"
+    type: "SoftmaxWithLoss"
+    bottom: "fc8"
+    bottom: "label"
+    top: "probT"
+    include {
+      phase: TEST
+    }
+}
+
+layer {
+    name: "prob"
+    type: "SoftmaxWithLoss"
+    bottom: "fc8"
+    bottom: "label"
+    top: "prob"
+    include {
+      phase: TRAIN
+    }
+}
+

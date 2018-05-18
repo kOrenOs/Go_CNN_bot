@@ -1,0 +1,1 @@
+./go_game_train/Go_game_CNN test

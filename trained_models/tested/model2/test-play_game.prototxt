@@ -1,0 +1,170 @@
+name: "Go_player"
+layer {
+  name: "data"
+  type: "MemoryData"
+  top: "data"
+  top: "label"
+  memory_data_param {
+    batch_size: 1
+    channels: 3
+    height: 19
+    width: 19
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prelu1"
+  type: "PReLU"
+  bottom: "conv1"
+  top: "prelu1"
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "prelu1"
+  top: "conv2"
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prelu2"
+  type: "PReLU"
+  bottom: "conv2"
+  top: "prelu2"
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "prelu2"
+  top: "conv3"
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prelu3"
+  type: "PReLU"
+  bottom: "conv3"
+  top: "prelu3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "prelu3"
+  top: "conv4"
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prelu4"
+  type: "PReLU"
+  bottom: "conv4"
+  top: "prelu4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "prelu4"
+  top: "conv5"
+  convolution_param {
+    num_output: 1
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prelu5"
+  type: "PReLU"
+  bottom: "conv5"
+  top: "prelu5"
+}
+layer {
+  name: "fc8"
+  type: "InnerProduct"
+  bottom: "prelu5"
+  top: "fc8"
+  inner_product_param {
+    num_output: 362
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+    name: "output_class"
+    type: "ArgMax"
+    bottom: "fc8"
+    top: "output_class"
+    include {
+      phase: TEST
+    }
+    argmax_param{
+      top_k: 361
+    }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc8"
+  bottom: "label"
+  top: "test_accuracy"
+  include {
+    phase: TEST
+  }
+}
